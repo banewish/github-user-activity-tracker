@@ -60,11 +60,26 @@ func main() {
 		limit = len(events)
 	}
 	for i := 0; i < limit; i++ {
-		fmt.Printf("Type: %s, Repo: %s, CreatedAt: %s\n", events[i].Type, events[i].Repo.Name, events[i].CreatedAt)
+		fmt.Println(formatEvent(events[i]))
 	}
 
 }
 
 func buildURL(username string) string {
 	return fmt.Sprintf("https://api.github.com/users/%s/events", username)
+}
+
+func formatEvent(e Event) string {
+	switch e.Type {
+	case "PushEvent":
+		return fmt.Sprintf("Pushed to %s at %s", e.Repo.Name, e.CreatedAt)
+	case "CreateEvent":
+		return fmt.Sprintf("Created something in %s at %s", e.Repo.Name, e.CreatedAt)
+	case "IssuesEvent":
+		return fmt.Sprintf("Updated issues in %s at %s", e.Repo.Name, e.CreatedAt)
+	case "WatchEvent":
+		return fmt.Sprintf("Starred %s at %s", e.Repo.Name, e.CreatedAt)
+	default:
+		return fmt.Sprintf("Did %s in %s at %s", e.Type, e.Repo.Name, e.CreatedAt)
+	}
 }
